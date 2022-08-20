@@ -1,5 +1,5 @@
-import entities
-import endpoints
+from pycdek import entities
+from pycdek import endpoints
 from pathlib import Path
 
 

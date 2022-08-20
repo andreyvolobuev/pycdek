@@ -1,6 +1,6 @@
-import entities
-import endpoints
-from auth import TokenManager
+from pycdek import entities
+from pycdek import endpoints
+from pycdek.auth import TokenManager
 
 
 class CDEK:
@@ -31,41 +31,38 @@ class CDEK:
         r = entities.CitySearchRequest(**kwargs)
         return self(endpoints.CityList, r)
 
+    def get_location(self, address, city):
+        return entities.Location(
+            code=city.code, 
+            longitude=city.longitude,
+            latitude=city.latitude,
+            country_code=city.country_code,
+            region=city.region,
+            sub_region=city.sub_region,
+            city=city.city,
+            address=address
+        )
+
     def create_package(self, **kwargs):
         return entities.Package(**kwargs)
 
     def get_available_tariffs(self, **kwargs):
         r = entities.TariffListRequest(**kwargs)
-        return self(endpoints.CalculateByAvailableTariffs, r.json())
+        return self(endpoints.CalculateByAvailableTariffs, r)
 
     def register_package(self, **kwargs):
         r = entities.OrderCreationRequest(**kwargs)
         return self(endpoints.NewOrder, r.json())
 
+    def get_contact(self, name, phones):
+        phone_list = []
+        if not isinstance(phones, list):
+            phones = [phones]
+        for phone in phones:
+            phone_list.append(entities.Phone(number=phone))
+        return entities.Contact(name=name, phones=phone_list)
 
-if __name__ == "__main__":
-    cdek = CDEK(CLIENT_ID, CLIENT_SECRET)
-
-    cities = cdek.get_cities(city="Москва")
-    moscow = cities[0]
-
-    cities = cdek.get_cities(city="Владивосток")
-    vladivostok = cities[0]
-
-    package = cdek.create_package(weight=1)
-
-    tariffs = cdek.get_available_tariffs(
-        from_location=moscow, to_location=vladivostok, packages=[package]
-    )
-
-    tariff = tariffs.cheapest
-
-    package = cdek.register_package(
-        tariff=tariff,
-        from_location=moscow,
-        to_location=vladivostok,
-        packages=[package],
-        services=[],
-    )
-
-    print(package)
+    def get_office(self, **kwargs):
+        r = entities.OfficeListRequest(**kwargs)
+        offices = self(endpoints.OfficeList, r.json())
+        return [office for office in offices if office.location.city_code == r.city_code]

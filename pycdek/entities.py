@@ -88,8 +88,8 @@ class TariffCode(IntEnum):
     PARCEL_DOOR_DOOR = 139
     PARCEL_DOOR_POST = 366
     PARCEL_WH_POST = 368
-    ECONOM_WH_WH = 233
-    ECONOM_WH_DOOR = 234
+    ECONOM_WH_WH = 234
+    ECONOM_WH_DOOR = 233
     ECONOM_WH_POST = 378
     CDEK_EXPRESS_WH_WH = 291
     CDEK_EXPRESS_WH_DOOR = 294
@@ -217,11 +217,11 @@ class PrintForm(str, Enum):
 
 class Money(BaseModel):
     """
-    :param value: Сумма в валюте
+    value: Сумма в валюте
 
-    :param value_sum: Сумма НДС
+    value_sum: Сумма НДС
 
-    :param value_rate: Ставка НДС (значение - 0, 10, 20 и т.п. , null - нет НДС)
+    value_rate: Ставка НДС (значение - 0, 10, 20 и т.п. , null - нет НДС)
 
     """
 
@@ -232,14 +232,14 @@ class Money(BaseModel):
 
 class Threshold(BaseModel):
     """
-    :param threshold: Порог стоимости товара (действует по условию меньше или равно)
+    threshold: Порог стоимости товара (действует по условию меньше или равно)
         в целых единицах валюты
 
-    :param sum: Доп. сбор за доставку товаров, общая стоимость которых попадает в интервал
+    sum: Доп. сбор за доставку товаров, общая стоимость которых попадает в интервал
 
-    :param vat_sum: Сумма НДС, включённая в доп. сбор за доставку
+    vat_sum: Сумма НДС, включённая в доп. сбор за доставку
 
-    :param vat_rate: Ставка НДС (значение - 0, 10, 20 и т.п. , null - нет НДС)
+    vat_rate: Ставка НДС (значение - 0, 10, 20 и т.п. , null - нет НДС)
 
     """
 
@@ -251,35 +251,35 @@ class Threshold(BaseModel):
 
 class Item(BaseModel):
     """
-    :param name: Наименование товара (может также содержать описание товара: размер, цвет)
+    name: Наименование товара (может также содержать описание товара: размер, цвет)
 
-    :param ware_key: Идентификатор/артикул товара
+    ware_key: Идентификатор/артикул товара
 
-    :param payment: Оплата за товар при получении
+    payment: Оплата за товар при получении
         (за единицу товара в указанной валюте, значение >=0) — наложенный платеж,
         в случае предоплаты значение = 0
 
-    :param cost: Объявленная стоимость товара
+    cost: Объявленная стоимость товара
         (за единицу товара в указанной валюте, значение >=0).
         С данного значения рассчитывается страховка
 
-    :param weight: Вес (за единицу товара, в граммах)
+    weight: Вес (за единицу товара, в граммах)
 
-    :param weight_gross: Вес брутто
+    weight_gross: Вес брутто
 
-    :param amount: Количество единиц товара (в штуках)
+    amount: Количество единиц товара (в штуках)
 
-    :param name_i18n: Наименование на иностранном языке
+    name_i18n: Наименование на иностранном языке
 
-    :param brand: Бренд на иностранном языке
+    brand: Бренд на иностранном языке
 
-    :param country_code: Код страны в формате  ISO_3166-1_alpha-2
+    country_code: Код страны в формате  ISO_3166-1_alpha-2
 
-    :param material: Код материала
+    material: Код материала
 
-    :param wifi_gsm: Содержит wifi/gsm
+    wifi_gsm: Содержит wifi/gsm
 
-    :param url: Ссылка на сайт интернет-магазина с описанием товара
+    url: Ссылка на сайт интернет-магазина с описанием товара
 
     """
 
@@ -300,9 +300,9 @@ class Item(BaseModel):
 
 class Phone(BaseModel):
     """
-    :param number: Номер телефона
+    number: Номер телефона
 
-    :param additional: Дополнительная информация (доп. номер)
+    additional: Дополнительная информация (доп. номер)
 
     """
 
@@ -312,22 +312,22 @@ class Phone(BaseModel):
 
 class Image(BaseModel):
     """
-    :param url: Ссылка на фото
+    url: Ссылка на фото
         <OfficeImage url="http://dfdfdf/images/22/47_1_SUR2"/>
 
-    :param number: Номер фото
+    number: Номер фото
 
     """
 
     url: constr(max_length=255)
-    number: int
+    number: Optional[int]
 
 
 class Service(BaseModel):
     """
-    :param code: Код дополнительной услуги
+    code: Код дополнительной услуги
 
-    :param parameter: Параметр дополнительной услуги
+    parameter: Параметр дополнительной услуги
 
     """
 
@@ -337,8 +337,8 @@ class Service(BaseModel):
 
 class Error(BaseModel):
     """
-    :param code: Код ошибки
-    :param message: Описание ошибки
+    code: Код ошибки
+    message: Описание ошибки
     """
 
     code: str
@@ -347,8 +347,8 @@ class Error(BaseModel):
 
 class Warning(BaseModel):
     """
-    :param code: Код предупреждения
-    :param message: Описание предупреждения
+    code: Код предупреждения
+    message: Описание предупреждения
     """
 
     code: str
@@ -396,47 +396,83 @@ class Headers(BaseModel):
 
 class Location(BaseModel):
     """
-    :param code: Код локации (справочник СДЭК)
+    code: Код населенного пункта СДЭК
+    fias_guid: Уникальный идентификатор ФИАС
+    postal_code: Почтовый индекс
+    longitude: Долгота
+    latitude: Широта
+    country_code: Код страны в формате  ISO_3166-1_alpha-2
+    region: Название региона
+    sub_region: Название района региона
+    city: Название города
+    kladr_code: Код КЛАДР
+    address: Строка адреса
     """
 
-    code: int
+    city_code: Optional[int]
+    fias_guid: Optional[UUID]
+    postal_code: Optional[constr(max_length=255)]
+    longitude: Optional[float]
+    latitude: Optional[float]
+    country_code: Optional[constr(min_length=2, max_length=2)]
+    region: Optional[constr(max_length=255)]
+    sub_region: Optional[constr(max_length=255)]
+    city: Optional[constr(max_length=255)]
+    kladr_code: Optional[constr(max_length=255)]
+    address: constr(max_length=255)
 
 
-class City(Location):
+class Status(BaseModel):
     """
-    :param city: Название населенного пункта.
+    code: Код статуса
+    name: Название статуса
+    date_time: Дата и время установки статуса (формат yyyy-MM-dd'T'HH:mm:ssZ)
+    reason_code: Дополнительный код статуса
+    city: Наименование места возникновения статуса
+    """
 
-    :param fias_guid: Уникальный идентификатор ФИАС населенного пункта
+    code: constr(max_length=255)
+    name: constr(max_length=255)
+    date_time: datetime
+    reason_code: Optional[constr(min_length=2, max_length=2)]
+    city: Optional[constr(max_length=255)]
 
-    :param country_code:
+
+class City(BaseModel):
+    """
+    city: Название населенного пункта.
+
+    fias_guid: Уникальный идентификатор ФИАС населенного пункта
+
+    country_code:
         Код страны населенного пункта в формате ISO_3166-1_alpha-2
 
-    :param country: Название страны населенного пункта
+    country: Название страны населенного пункта
 
-    :param region: Название региона населенного пункта
+    region: Название региона населенного пункта
 
-    :param region_code: Код региона СДЭК
+    region_code: Код региона СДЭК
 
-    :param fias_region_guid:
+    fias_region_guid:
         Уникальный идентификатор ФИАС региона населенного пункта
 
-    :param sub_region: Название района региона населенного пункта
+    sub_region: Название района региона населенного пункта
 
-    :param postal_codes: Массив почтовых индексов
+    postal_codes: Массив почтовых индексов
 
-    :param longitude: Долгота центра населенного пункта
+    longitude: Долгота центра населенного пункта
 
-    :param latitude: Широта центра населенного пункта
+    latitude: Широта центра населенного пункта
 
-    :param time_zone: Часовой пояс населенного пункта
+    time_zone: Часовой пояс населенного пункта
 
-    :param payment_limit:
+    payment_limit:
         Ограничение на сумму наложенного платежа в населенном пункте
 
-    :param errors: Список ошибок
+    errors: Список ошибок
 
     """
-
+    code: int
     city: str
     fias_guid: Optional[UUID]
     country_code: str
@@ -455,27 +491,27 @@ class City(Location):
 
 class CitySearchRequest(BaseModel):
     """
-    :param country_codes: Массив кодов стран в формате  ISO_3166-1_alpha-2
+    country_codes: Массив кодов стран в формате  ISO_3166-1_alpha-2
 
-    :param region_code: Код региона СДЭК
+    region_code: Код региона СДЭК
 
-    :param fias_region_guid: Уникальный идентификатор ФИАС региона
+    fias_region_guid: Уникальный идентификатор ФИАС региона
 
-    :param fias_guid: Уникальный идентификатор ФИАС населенного пункта
+    fias_guid: Уникальный идентификатор ФИАС населенного пункта
 
-    :param postal_code: Почтовый индекс
+    postal_code: Почтовый индекс
 
-    :param code: Код населенного пункта СДЭК
+    code: Код населенного пункта СДЭК
 
-    :param city: Название населенного пункта. Должно соответствовать полностью
+    city: Название населенного пункта. Должно соответствовать полностью
 
-    :param page: Номер страницы выборки результата. По умолчанию 0
+    page: Номер страницы выборки результата. По умолчанию 0
 
-    :param size: Ограничение выборки результата. По умолчанию 1000
+    size: Ограничение выборки результата. По умолчанию 1000
 
-    :param lang: Локализация. По умолчанию "rus"
+    lang: Локализация. По умолчанию "rus"
 
-    :param payment_limit: Ограничение на сумму наложенного платежа:
+    payment_limit: Ограничение на сумму наложенного платежа:
         -1 - ограничения нет;
         0 - наложенный платеж не принимается;
         положительное значение - сумма наложенного платежа не более данного значения.
@@ -502,27 +538,27 @@ class CitySearchRequest(BaseModel):
 
 class Contact(BaseModel):
     """
-    :param company: Наименование компании
+    company: Наименование компании
 
-    :param name: Ф.И.О контактного лица
+    name: Ф.И.О контактного лица
 
-    :param email: Эл. адрес
+    email: Эл. адрес
 
-    :param phones: Список телефонов
+    phones: Список телефонов
 
-    :param passport_series: Серия паспорта
+    passport_series: Серия паспорта
 
-    :param passport_number: Номер паспорта
+    passport_number: Номер паспорта
 
-    :param passport_date_of_issue: Дата выдачи паспорта
+    passport_date_of_issue: Дата выдачи паспорта
 
-    :param passport_organization: Орган выдачи паспорта
+    passport_organization: Орган выдачи паспорта
 
-    :param passport_date_of_birth: Дата рождения
+    passport_date_of_birth: Дата рождения
 
-    :param tin: ИНН
+    tin: ИНН
 
-    :param passport_requirements_satisfied:
+    passport_requirements_satisfied:
         Требования по паспортным данным удовлетворены
         (актуально для международных заказов):
         true - паспортные данные собраны или не требуются
@@ -540,7 +576,7 @@ class Contact(BaseModel):
     passport_organization: Optional[constr(max_length=255)]
     passport_date_of_birth: Optional[date]
     tin: Optional[constr(max_length=255)]
-    passport_requirements_satisfied: bool
+    passport_requirements_satisfied: Optional[bool]
 
     @validator("passport_requirements_satisfied", always=True)
     def validate_passport(cls, v, values):
@@ -564,15 +600,15 @@ class Contact(BaseModel):
 
 class Seller(BaseModel):
     """
-    :param name: Наименование истинного продавца
+    name: Наименование истинного продавца
 
-    :param inn: ИНН истинного продавца
+    inn: ИНН истинного продавца
 
-    :param phone: Телефон истинного продавца
+    phone: Телефон истинного продавца
 
-    :param ownership_form: Код формы собственности
+    ownership_form: Код формы собственности
 
-    :param address: Адрес истинного продавца.
+    address: Адрес истинного продавца.
         Используется при печати инвойсов для отображения адреса
         настоящего продавца товара, либо торгового названия
 
@@ -587,21 +623,21 @@ class Seller(BaseModel):
 
 class Package(BaseModel):
     """
-    :param number: Номер упаковки
+    number: Номер упаковки
         (можно использовать порядковый номер упаковки заказа или номер заказа),
         уникален в пределах заказа. Идентификатор заказа в ИС Клиента
 
-    :param weight: Общий вес (в граммах)
+    weight: Общий вес (в граммах)
 
-    :param length: Габариты упаковки. Длина (в сантиметрах)
+    length: Габариты упаковки. Длина (в сантиметрах)
 
-    :param width: Габариты упаковки. Ширина (в сантиметрах)
+    width: Габариты упаковки. Ширина (в сантиметрах)
 
-    :param height: Габариты упаковки. Высота (в сантиметрах)
+    height: Габариты упаковки. Высота (в сантиметрах)
 
-    :param comment: Комментарий к упаковке
+    comment: Комментарий к упаковке
 
-    :param items: Позиции товаров в упаковке
+    items: Позиции товаров в упаковке
 
     """
 
@@ -622,26 +658,26 @@ class Package(BaseModel):
 
 class TariffListRequest(BaseModel):
     """
-    :param date: Дата и время планируемой передачи заказа
+    date: Дата и время планируемой передачи заказа
         По умолчанию - текущая
 
-    :param type: Тип заказа:
+    type: Тип заказа:
         1 - "интернет-магазин"
         2 - "доставка"
         По умолчанию - 1
 
-    :param currency: Валюта, в которой необходимо произвести расчет.
+    currency: Валюта, в которой необходимо произвести расчет.
         По умолчанию - валюта договора
 
-    :param lang: Язык вывода информации о тарифах
+    lang: Язык вывода информации о тарифах
         Возможные значения: rus, eng, zho
         По умолчанию - rus
 
-    :param from_location: Адрес отправления
+    from_location: Адрес отправления
 
-    :param to_location: Адрес получения
+    to_location: Адрес получения
 
-    :param packages: Список информации по местам (упаковкам)
+    packages: Список информации по местам (упаковкам)
 
     """
 
@@ -656,19 +692,19 @@ class TariffListRequest(BaseModel):
 
 class Tariff(BaseModel):
     """
-    :param tariff_code: Код тарифа
+    tariff_code: Код тарифа
 
-    :param tariff_name: Название тарифа на языке вывода
+    tariff_name: Название тарифа на языке вывода
 
-    :param tariff_description: Описание тарифа на языке вывода
+    tariff_description: Описание тарифа на языке вывода
 
-    :param delivery_mode: Режим тарифа
+    delivery_mode: Режим тарифа
 
-    :param delivery_sum: Стоимость доставки
+    delivery_sum: Стоимость доставки
 
-    :param period_min: Минимальное время доставки (в рабочих днях)
+    period_min: Минимальное время доставки (в рабочих днях)
 
-    :param period_max: Максимальное время доставки (в рабочих днях)
+    period_max: Максимальное время доставки (в рабочих днях)
 
     """
 
@@ -683,9 +719,9 @@ class Tariff(BaseModel):
 
 class TariffListResponse(BaseModel):
     """
-    :param tariff_codes: Доступные тарифы
+    tariff_codes: Доступные тарифы
 
-    :param errors: Список ошибок
+    errors: Список ошибок
     """
 
     tariffs: Optional[list[Tariff]] = Field(alias="tariff_codes")
@@ -712,60 +748,61 @@ class TariffListResponse(BaseModel):
 
 class OfficeListRequest(BaseModel):
     """
-    :param postal_code: Почтовый индекс города, для которого необходим список офисов
+    postal_code: Почтовый индекс города, для которого необходим список офисов
 
-    :param city_code: Код города по базе СДЭК
+    city_code: Код города по базе СДЭК
 
-    :param type: Тип офиса, может принимать значения:
+    type: Тип офиса, может принимать значения:
         «PVZ» - для отображения только складов СДЭК;
         «POSTAMAT» - для отображения постаматов СДЭК;
         «ALL» - для отображения всех ПВЗ независимо от их типа.
 
         При отсутствии параметра принимается значение по умолчанию «ALL»
 
-    :param country_code: Код страны в формате ISO_3166-1_alpha-2
+    country_code: Код страны в формате ISO_3166-1_alpha-2
         (см. “Общероссийский классификатор стран мира”)
 
-    :param region_code: Код региона по базе СДЭК
+    region_code: Код региона по базе СДЭК
 
-    :param have_cashless: Наличие терминала оплаты, может принимать значения:
+    have_cashless: Наличие терминала оплаты, может принимать значения:
         «1», «true» - есть;
         «0», «false» - нет.
 
-    :param have_cash: Есть прием наличных, может принимать значения:
+    have_cash: Есть прием наличных, может принимать значения:
         «1», «true» - есть;
         «0», «false» - нет.
 
-    :param allowed_cod: Разрешен наложенный платеж, может принимать значения:
+    allowed_cod: Разрешен наложенный платеж, может принимать значения:
         «1», «true» - да;
         «0», «false» - нет.
 
-    :param is_dressing_room: Наличие примерочной, может принимать значения:
+    is_dressing_room: Наличие примерочной, может принимать значения:
         «1», «true» - есть;
         «0», «false» - нет.
 
-    :param weight_max: Максимальный вес в кг, который может принять офис
+    weight_max: Максимальный вес в кг, который может принять офис
         (значения больше 0 - передаются офисы, которые принимают этот вес;
         0 - офисы с нулевым весом не передаются; значение не указано - все офисы)
 
-    :param weight_min: Минимальный вес в кг, который принимает офис
+    weight_min: Минимальный вес в кг, который принимает офис
         (при переданном значении будут выводиться офисы с минимальным
         весом до указанного значения)
 
-    :param lang: Локализация офиса. По умолчанию "rus".
+    lang: Локализация офиса. По умолчанию "rus".
 
-    :param take_only: Является ли офис только пунктом выдачи,
+    take_only: Является ли офис только пунктом выдачи,
         может принимать значения:
         «1», «true» - да;
         «0», «false» - нет.
 
-    :param is_handout: Является пунктом выдачи, может принимать значения:
+    is_handout: Является пунктом выдачи, может принимать значения:
         «1», «true» - да;
         «0», «false» - нет.
 
     """
 
     postal_code: Optional[int]
+    city: Optional[City]
     city_code: Optional[int]
     type: Optional[OfficeType]
     country_code: Optional[constr(min_length=2, max_length=2)]
@@ -780,13 +817,17 @@ class OfficeListRequest(BaseModel):
     take_only: Optional[bool]
     is_handout: Optional[bool]
 
+    @validator("city_code", always=True)
+    def validate_city_code(cls, v, values):
+        return values['city'].code
+
 
 class WorkTime(BaseModel):
     """
-    :param day: Порядковый номер дня начиная с единицы.
+    day: Порядковый номер дня начиная с единицы.
         Понедельник = 1, воскресенье = 7.
 
-    :param time: Период работы в эти дни.
+    time: Период работы в эти дни.
         Если в этот день не работают, то не отображается.
 
     """
@@ -797,11 +838,11 @@ class WorkTime(BaseModel):
 
 class WorkTimeException(BaseModel):
     """
-    :param date: Дата
+    date: Дата
 
-    :param time: Период работы в указанную дату. Если в этот день не работают, то не отображается.
+    time: Период работы в указанную дату. Если в этот день не работают, то не отображается.
 
-    :param is_working: Признак рабочего/нерабочего дня в указанную дату
+    is_working: Признак рабочего/нерабочего дня в указанную дату
 
     """
 
@@ -812,11 +853,11 @@ class WorkTimeException(BaseModel):
 
 class PostamatCell(BaseModel):
     """
-    :param width: Ширина (см)
+    width: Ширина (см)
 
-    :param height: Высота (см)
+    height: Высота (см)
 
-    :param depth: Глубина (см)
+    depth: Глубина (см)
 
     """
 
@@ -827,79 +868,79 @@ class PostamatCell(BaseModel):
 
 class Office(BaseModel):
     """
-    :param code: Код
+    code: Код
 
-    :param name: Название
+    name: Название
 
-    :param location: Адрес офиса
+    location: Адрес офиса
 
-    :param address_comment: Описание местоположения
+    address_comment: Описание местоположения
 
-    :param nearest_station: Ближайшая станция/остановка транспорта
+    nearest_station: Ближайшая станция/остановка транспорта
 
-    :param nearest_metro_station: Ближайшая станция метро
+    nearest_metro_station: Ближайшая станция метро
 
-    :param work_time: Режим работы, строка вида «пн-пт 9-18, сб 9-16»
+    work_time: Режим работы, строка вида «пн-пт 9-18, сб 9-16»
 
-    :param phones: Список телефонов
+    phones: Список телефонов
 
-    :param email: Адрес электронной почты
+    email: Адрес электронной почты
 
-    :param note: Примечание по офису
+    note: Примечание по офису
 
-    :param type: Тип ПВЗ: PVZ — склад СДЭК, POSTAMAT — постамат СДЭК
+    type: Тип ПВЗ: PVZ — склад СДЭК, POSTAMAT — постамат СДЭК
 
-    :param owner_сode: Принадлежность офиса компании:
+    owner_сode: Принадлежность офиса компании:
         cdek — офис принадлежит компании СДЭК
         InPost — офис принадлежит компании InPost
 
-    :param take_only: Является ли офис только пунктом выдачи
+    take_only: Является ли офис только пунктом выдачи
         или также осуществляет приём грузов
 
-    :param is_handout: Является пунктом выдачи
+    is_handout: Является пунктом выдачи
 
-    :param is_dressing_room: Есть ли примерочная
+    is_dressing_room: Есть ли примерочная
 
-    :param have_cashless: Есть безналичный расчет
+    have_cashless: Есть безналичный расчет
 
-    :param have_cash: Есть приём наличных
+    have_cash: Есть приём наличных
 
-    :param allowed_cod: Разрешен наложенный платеж в ПВЗ
+    allowed_cod: Разрешен наложенный платеж в ПВЗ
 
-    :param site: Ссылка на данный офис на сайте СДЭК
+    site: Ссылка на данный офис на сайте СДЭК
 
-    :param office_image_list: Все фото офиса (кроме фото как доехать).
+    office_image_list: Все фото офиса (кроме фото как доехать).
 
-    :param work_time_list: График работы на неделю.
+    work_time_list: График работы на неделю.
         Вложенный тег с атрибутами day и periods.
 
-    :param work_time_exceptions: Исключения в графике работы офиса
+    work_time_exceptions: Исключения в графике работы офиса
 
-    :param weight_min: Минимальный вес (в кг.), принимаемый в ПВЗ (> WeightMin)
+    weight_min: Минимальный вес (в кг.), принимаемый в ПВЗ (> WeightMin)
 
-    :param weight_max: Максимальный вес (в кг.), принимаемый в ПВЗ (<=WeightMax)
+    weight_max: Максимальный вес (в кг.), принимаемый в ПВЗ (<=WeightMax)
 
-    :param fulfillment: Наличие зоны фулфилмента
+    fulfillment: Наличие зоны фулфилмента
 
-    :param dimensions: Перечень максимальных размеров ячеек
+    dimensions: Перечень максимальных размеров ячеек
         (только для type = POSTAMAT)
 
-    :param errors: Список ошибок
+    errors: Список ошибок
 
     """
 
     code: constr(max_length=10)
     name: constr(max_length=50)
-    location: City
+    location: Location
     address_comment: Optional[constr(max_length=255)]
-    nearest_station: Optional[constr(max_length=50)]
+    nearest_station: Optional[constr(max_length=120)]
     nearest_metro_station: Optional[constr(max_length=50)]
     work_time: constr(max_length=100)
     phones: list[Phone]
-    email: constr(max_length=255)
+    email: Optional[constr(max_length=255)]
     note: Optional[constr(max_length=255)]
     type: OfficeType
-    owner_сode: OfficeOwner
+    owner_code: OfficeOwner
     take_only: bool
     is_handout: bool
     is_dressing_room: bool
@@ -909,7 +950,7 @@ class Office(BaseModel):
     site: Optional[constr(max_length=255)]
     office_image_list: Optional[list[Image]]
     work_time_list: list[WorkTime]
-    work_time_exceptions: list[WorkTimeException]
+    work_time_exceptions: Optional[list[WorkTimeException]]
     weight_min: Optional[float]
     weight_max: Optional[float]
     fulfillment: bool
@@ -926,60 +967,60 @@ class Office(BaseModel):
 
 class OrderCreationRequest(BaseModel):
     """
-    :param type: Тип заказа:
+    type: Тип заказа:
         1 - "интернет-магазин" (только для договора типа "Договор с ИМ")
         2 - "доставка" (для любого договора)
 
         По умолчанию - 1
 
-    :param number: Номер заказа в ИС Клиента
+    number: Номер заказа в ИС Клиента
         (если не передан, будет присвоен номер заказа в ИС СДЭК - uuid)
         Только для заказов "интернет-магазин"
 
-    :param tariff_code: Код тарифа
+    tariff_code: Код тарифа
 
-    :param comment: Комментарий к заказу
+    comment: Комментарий к заказу
 
-    :param developer_key: Ключ разработчика
+    developer_key: Ключ разработчика
 
-    :param shipment_point: Код ПВЗ СДЭК, на который будет производиться
+    shipment_point: Код ПВЗ СДЭК, на который будет производиться
         забор отправления, либо самостоятельный привоз клиентом
 
-    :param delivery_point: Код ПВЗ СДЭК, на который будет доставлена посылка
+    delivery_point: Код ПВЗ СДЭК, на который будет доставлена посылка
 
-    :param date_invoice: Дата инвойса
+    date_invoice: Дата инвойса
         Только для заказов "интернет-магазин"
 
-    :param shipper_name: Грузоотправитель
+    shipper_name: Грузоотправитель
         Только для заказов "интернет-магазин"
 
-    :param shipper_address: Адрес грузоотправителя
+    shipper_address: Адрес грузоотправителя
         Только для заказов "интернет-магазин"
 
-    :param delivery_recipient_cost: Доп. сбор за доставку, которую ИМ
+    delivery_recipient_cost: Доп. сбор за доставку, которую ИМ
         берет с получателя.
         Только для заказов "интернет-магазин"
 
-    :param delivery_recipient_cost_adv: Доп. сбор за доставку (которую
+    delivery_recipient_cost_adv: Доп. сбор за доставку (которую
         ИМ берет с получателя) в зависимости от суммы заказа
         Только для заказов "интернет-магазин"
 
-    :param sender: Отправитель
+    sender: Отправитель
 
-    :param seller: Реквизиты истинного продавца
+    seller: Реквизиты истинного продавца
         Только для заказов "интернет-магазин"
 
-    :param recipient: Получатель
+    recipient: Получатель
 
-    :param from_location: Адрес отправления
+    from_location: Адрес отправления
 
-    :param to_location: Адрес получения
+    to_location: Адрес получения
 
-    :param services: Дополнительные услуги
+    services: Дополнительные услуги
 
-    :param packages: Список информации по местам (упаковкам)
+    packages: Список информации по местам (упаковкам)
 
-    :param print: Необходимость сформировать печатную форму по заказу
+    print: Необходимость сформировать печатную форму по заказу
         Может принимать значения:
         barcode - ШК мест (число копий - 1)
         waybill - квитанция (число копий - 2)
@@ -988,7 +1029,8 @@ class OrderCreationRequest(BaseModel):
 
     type: Optional[OrderType]
     number: Optional[constr(max_length=32)]
-    tariff: Tariff | int
+    tariff: Tariff
+    tariff_code: Optional[int]
     comment: Optional[constr(max_length=255)]
     developer_key: Optional[str]
     shipment_point: Optional[Office | constr(max_length=255)]
@@ -1022,11 +1064,9 @@ class OrderCreationRequest(BaseModel):
             )
         return v
 
-    @validator("tariff")
-    def validate_tariff(cls, v, values):
-        if isinstance(v, Tariff):
-            return v.tariff_code
-        return v
+    @validator("tariff_code", always=True)
+    def validate_tariff_code(cls, v, values):
+        return values['tariff'].tariff_code
 
     @validator("shipment_point", always=True)
     def validate_shipment_point(cls, v, values):
@@ -1056,16 +1096,15 @@ class OrderCreationRequest(BaseModel):
         return v
 
     @validator("date_invoice", "shipper_name", "shipper_address", "seller", always=True)
-    def validate_date_invoice(cls, v, values, **kwargs):
+    def validate_international(cls, v, values, **kwargs):
         field = kwargs.get("field")
         tariff = values.get("tariff")
-        if isinstance(tariff, Tariff):
-            if tariff_is_international(tariff) and v:
-                return v
-            else:
-                raise ValueError(
-                    f"You have to provide {field.name} in case of international order"
-                )
+        if tariff_is_international(tariff) and v:
+            return v
+        else:
+            raise ValueError(
+                f"You have to provide {field.name} in case of international order"
+            )
 
         order_type = values.get("type", OrderType.ECOMMERCE)
         if order_type != OrderType.ECOMMERCE:
@@ -1114,8 +1153,8 @@ class OrderCreationRequest(BaseModel):
 
 class Entity(BaseModel):
     """
-    :param uuid: Идентификатор заказа в ИС СДЭК
-    :param type: Тип связанной сущности
+    uuid: Идентификатор заказа в ИС СДЭК
+    type: Тип связанной сущности
         Может принимать значения:
         waybill - квитанция к заказу
         barcode - ШК места к заказу
@@ -1127,15 +1166,15 @@ class Entity(BaseModel):
 
 class OrderManipulationRequest(BaseModel):
     """
-    :param request_uuid: Идентификатор запроса в ИС СДЭК
+    request_uuid: Идентификатор запроса в ИС СДЭК
 
-    :param type: Тип запроса
+    type: Тип запроса
         Может принимать значения: CREATE, UPDATE, DELETE, AUTH, GET
 
-    :param date_time: Дата и время установки текущего состояния запроса
+    date_time: Дата и время установки текущего состояния запроса
         (формат yyyy-MM-dd'T'HH:mm:ssZ)
 
-    :param state: Текущее состояние запроса
+    state: Текущее состояние запроса
         Может принимать значения:
 
         ACCEPTED - пройдена предварительная валидация и запрос принят
@@ -1143,9 +1182,9 @@ class OrderManipulationRequest(BaseModel):
         SUCCESSFUL - запрос обработан успешно
         INVALID - запрос обработался с ошибкой
 
-    :param errors: Ошибки, возникшие в ходе выполнения запроса
+    errors: Ошибки, возникшие в ходе выполнения запроса
 
-    :param warnings: Предупреждения, возникшие в ходе выполнения запроса
+    warnings: Предупреждения, возникшие в ходе выполнения запроса
 
     """
 
@@ -1159,9 +1198,9 @@ class OrderManipulationRequest(BaseModel):
 
 class OrderCreationResponse(BaseModel):
     """
-    :param entity: Информация о заказе
-    :param requests: Информация о запросе над заказом
-    :param related_entities: Связанные сущности (если в запросе был передан корректный print)
+    entity: Информация о заказе
+    requests: Информация о запросе над заказом
+    related_entities: Связанные сущности (если в запросе был передан корректный print)
     """
 
     entity: Optional[Entity]
@@ -1170,7 +1209,7 @@ class OrderCreationResponse(BaseModel):
 
 
 def tariff_is_international(tariff: Tariff) -> bool:
-    return tariff.code in (
+    return tariff.tariff_code in (
         TariffCode.INTERNATIONAL_DOCS,
         TariffCode.INTERNATIONAL_CARGO,
         TariffCode.CHINESE_EXP_WH_DOOR,

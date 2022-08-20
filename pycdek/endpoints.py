@@ -1,5 +1,5 @@
 import requests
-import entities
+from pycdek import entities
 from pydantic import parse_obj_as
 from abc import ABC, abstractmethod, abstractproperty
 
@@ -32,6 +32,7 @@ class Endpoint(ABC):
         r = session(url, *args, **kwargs)
         if r.status_code == 401:
             raise PermissionError("Headers are invalid")
+        print('aaaa\n\n', r.json(), '\n\n\n')
         return parse_obj_as(self._OBJECT, r.json())
 
 
@@ -130,6 +131,7 @@ class AddWebhook(Endpoint):
 class OfficeList(Endpoint):
     _URL = "deliverypoints"
     _METHOD = "get"
+    _OBJECT = list[entities.Office]
 
 
 class RegionsList(Endpoint):
