@@ -1,3 +1,4 @@
+import uuid
 from pycdek import entities
 from pycdek import endpoints
 from pycdek.auth import TokenManager
@@ -29,7 +30,7 @@ class CDEK:
 
     def get_cities(self, **kwargs):
         r = entities.CitySearchRequest(**kwargs)
-        return self(endpoints.CityList, r)
+        return self(endpoints.CityList, r.dict())
 
     def get_location(self, address, city):
         return entities.Location(
@@ -43,12 +44,34 @@ class CDEK:
             address=address
         )
 
-    def create_package(self, **kwargs):
-        return entities.Package(**kwargs)
+    def create_package(
+            self, 
+            name, 
+            weight,
+            ware_key=None,
+            payment=None,
+            cost=None,
+            vat_sum=None,
+            vat_rate=None,
+            amount=1
+        ):
+        item = entities.Item(
+            name=name,
+            ware_key=ware_key or uuid.uuid4().hex[:20],
+            payment=entities.Money(
+                value=payment if payment else 0,
+                vat_sum=vat_sum,
+                vat_rate=vat_rate
+            ),
+            cost=cost or 0,
+            weight=weight,
+            amount=amount
+        )
+        return entities.Package(weight=weight, items=[item])
 
     def get_available_tariffs(self, **kwargs):
         r = entities.TariffListRequest(**kwargs)
-        return self(endpoints.CalculateByAvailableTariffs, r)
+        return self(endpoints.CalculateByAvailableTariffs, r.json())
 
     def register_package(self, **kwargs):
         r = entities.OrderCreationRequest(**kwargs)
@@ -64,5 +87,4 @@ class CDEK:
 
     def get_office(self, **kwargs):
         r = entities.OfficeListRequest(**kwargs)
-        offices = self(endpoints.OfficeList, r.json())
-        return [office for office in offices if office.location.city_code == r.city_code]
+        return self(endpoints.OfficeList, r.dict())

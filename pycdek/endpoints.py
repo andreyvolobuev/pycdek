@@ -32,7 +32,6 @@ class Endpoint(ABC):
         r = session(url, *args, **kwargs)
         if r.status_code == 401:
             raise PermissionError("Headers are invalid")
-        print('aaaa\n\n', r.json(), '\n\n\n')
         return parse_obj_as(self._OBJECT, r.json())
 
 
@@ -46,6 +45,24 @@ class NewOrder(Endpoint):
     _URL = "orders"
     _METHOD = "post"
     _OBJECT = entities.OrderCreationResponse
+
+
+class OfficeList(Endpoint):
+    _URL = "deliverypoints"
+    _METHOD = "get"
+    _OBJECT = list[entities.Office]
+
+
+class CityList(Endpoint):
+    _URL = "location/cities"
+    _METHOD = "get"
+    _OBJECT = list[entities.City]
+    
+
+class CalculateByAvailableTariffs(Endpoint):
+    _URL = "calculator/tarifflist"
+    _METHOD = "post"
+    _OBJECT = entities.TariffListResponse
 
 
 class OrderInfo(Endpoint):
@@ -128,32 +145,14 @@ class AddWebhook(Endpoint):
     _METHOD = "post"
 
 
-class OfficeList(Endpoint):
-    _URL = "deliverypoints"
-    _METHOD = "get"
-    _OBJECT = list[entities.Office]
-
-
 class RegionsList(Endpoint):
     _URL = "location/regions"
     _METHOD = "get"
 
 
-class CityList(Endpoint):
-    _URL = "location/cities"
-    _METHOD = "get"
-    _OBJECT = list[entities.City]
-
-
 class CalculateByTariff(Endpoint):
     _URL = "calculator/tariff"
     _METHOD = "post"
-
-
-class CalculateByAvailableTariffs(Endpoint):
-    _URL = "calculator/tarifflist"
-    _METHOD = "post"
-    _OBJECT = entities.TariffListResponse
 
 
 class CalculateCustomsTariff(Endpoint):

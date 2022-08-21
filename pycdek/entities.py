@@ -295,7 +295,7 @@ class Item(BaseModel):
     country_code: Optional[constr(min_length=2, max_length=2)]
     material: Optional[MaterialCode]
     wifi_gsm: Optional[bool]
-    url: constr(max_length=255)
+    url: Optional[constr(max_length=255)]
 
 
 class Phone(BaseModel):
@@ -472,7 +472,7 @@ class City(BaseModel):
     errors: Список ошибок
 
     """
-    code: int
+    code: str
     city: str
     fias_guid: Optional[UUID]
     country_code: str
@@ -1099,12 +1099,14 @@ class OrderCreationRequest(BaseModel):
     def validate_international(cls, v, values, **kwargs):
         field = kwargs.get("field")
         tariff = values.get("tariff")
-        if tariff_is_international(tariff) and v:
-            return v
-        else:
-            raise ValueError(
-                f"You have to provide {field.name} in case of international order"
-            )
+        if tariff_is_international(tariff):
+            if v:
+                return v
+            else:
+                raise ValueError(
+                    f"You have to provide {field.name} in case of international order"
+                )
+        return v
 
         order_type = values.get("type", OrderType.ECOMMERCE)
         if order_type != OrderType.ECOMMERCE:
