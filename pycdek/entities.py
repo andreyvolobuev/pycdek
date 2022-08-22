@@ -78,6 +78,36 @@ class OfficeOwner(str, Enum):
     INPOST: str = "InPost"
 
 
+class ProblemCode(IntEnum):
+    WRONG_PHONE = 1
+    PACKAGE_NOT_READY = 9
+    DENIED_TO_PAY = 11
+    NO_CONTACT = 13
+    ORGANIZATION_UNAVAILABLE = 17
+    ADDRESS_CHANGED = 19
+    LATE = 35
+    SELF_PICK_UP = 36
+    POST_OVERFILL = 37
+    POST_OUT_OF_SERVICE = 38
+    PACKAGE_WONT_FIT = 39
+    DENY_TO_ACCEPT = 40
+    ORDER_CANCEL = 41
+    ENTRY_PASS_NEEDED = 42
+    PASS_NEEDS_PAYMENT = 43
+    CLOSED_PROPERTY = 44
+    NO_ID = 45
+    CITY_CHANGE = 46
+    NO_ADDRESS = 47
+    DELIVERY_TO_POST = 48
+    DANGEROUS_CARGO = 49
+    DENY_ADDRESS = 52
+    INTERVAL_CHANGED = 53
+    POST_APP_OUT_OF_SERVICE = 54
+    PACKAGE_NOT_FOUND = 55
+    PASS_TO_PVZ = 56
+    CANT_DELIVER_TO_PVZ = 57
+
+
 class TariffCode(IntEnum):
     # ECOMMERCE TARIFFS
     INTERNATIONAL_DOCS = 7
@@ -284,7 +314,7 @@ class Item(BaseModel):
     """
 
     name: constr(max_length=255)
-    ware_key: constr(max_length=20)
+    ware_key: Optional[constr(max_length=20)]
     payment: Money
     cost: float
     weight: int
@@ -296,6 +326,12 @@ class Item(BaseModel):
     material: Optional[MaterialCode]
     wifi_gsm: Optional[bool]
     url: Optional[constr(max_length=255)]
+
+    @validator("ware_key", always=True)
+    def validate_number(cls, v, values):
+        if not v:
+            return uuid.uuid4().hex[:20]
+        return v
 
 
 class Phone(BaseModel):
@@ -333,6 +369,15 @@ class Service(BaseModel):
 
     code: ServiceCode
     parameter: Optional[str]
+
+
+class Problem(BaseModel):
+    """
+    code: Код проблемы
+    create_date: Дата создания проблемы
+    """
+    code: Optional[ProblemCode]
+    create_date: Optional[datetime]
 
 
 class Error(BaseModel):
@@ -641,7 +686,7 @@ class Package(BaseModel):
 
     """
 
-    number: Optional[constr(max_length=255)]
+    number: Optional[constr(max_length=30)]
     weight: int
     length: Optional[int]
     width: Optional[int]
@@ -652,7 +697,7 @@ class Package(BaseModel):
     @validator("number", always=True)
     def validate_number(cls, v, values):
         if not v:
-            return str(uuid.uuid4())
+            return uuid.uuid4().hex[:30]
         return v
 
 
@@ -1163,7 +1208,35 @@ class Entity(BaseModel):
     """
 
     uuid: UUID
-    type: Optional[PrintForm]
+    is_return: bool
+    is_reverse: bool
+    type: Optional[OrderType]
+    cdek_number: str
+    number: Optional[constr(max_length=40)]
+    delivery_mode: Optional[DeliveryMode]
+    tariff_code: int
+    comment: Optional[constr(max_length=255)]
+    developer_key: Optional[str]
+    shipment_point: Optional[str]
+    delivery_point: Optional[str]
+    date_invoice: Optional[date]
+    shipper_name: Optional[constr(max_length=255)]
+    shipper_address: Optional[constr(max_length=255)]
+    delivery_recipient_cost: Optional[Money]
+    delivery_recipient_cost_adv: Optional[Threshold]
+    sender: Contact
+    seller: Optional[Seller]
+    recipient: Contact
+    from_location: Location
+    to_location: Location
+    services: Optional[list[Service]]
+    packages: list[Package]
+    delivery_problem: Optional[list[Problem]]
+    delivery_detail: dict
+    transacted_payment: Optional[bool]
+    statuses: Optional[list[Status]]
+    calls: Optional[dict]
+
 
 
 class OrderManipulationRequest(BaseModel):
@@ -1199,6 +1272,18 @@ class OrderManipulationRequest(BaseModel):
 
 
 class OrderCreationResponse(BaseModel):
+    """
+    entity: Информация о заказе
+    requests: Информация о запросе над заказом
+    related_entities: Связанные сущности (если в запросе был передан корректный print)
+    """
+
+    entity: Optional[Entity]
+    requests: list[OrderManipulationRequest]
+    related_entities: Optional[Entity]
+
+
+class OrderInfoResponse(BaseModel):
     """
     entity: Информация о заказе
     requests: Информация о запросе над заказом

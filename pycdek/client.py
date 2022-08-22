@@ -1,4 +1,3 @@
-import uuid
 from pycdek import entities
 from pycdek import endpoints
 from pycdek.auth import TokenManager
@@ -48,7 +47,6 @@ class CDEK:
             self, 
             name, 
             weight,
-            ware_key=None,
             payment=None,
             cost=None,
             vat_sum=None,
@@ -57,7 +55,6 @@ class CDEK:
         ):
         item = entities.Item(
             name=name,
-            ware_key=ware_key or uuid.uuid4().hex[:20],
             payment=entities.Money(
                 value=payment if payment else 0,
                 vat_sum=vat_sum,
@@ -73,7 +70,7 @@ class CDEK:
         r = entities.TariffListRequest(**kwargs)
         return self(endpoints.CalculateByAvailableTariffs, r.json())
 
-    def register_package(self, **kwargs):
+    def register_order(self, **kwargs):
         r = entities.OrderCreationRequest(**kwargs)
         return self(endpoints.NewOrder, r.json())
 
@@ -88,3 +85,6 @@ class CDEK:
     def get_office(self, **kwargs):
         r = entities.OfficeListRequest(**kwargs)
         return self(endpoints.OfficeList, r.dict())
+
+    def get_order_info(self, uuid):
+        return self(endpoints.OrderInfo, uuid=uuid)

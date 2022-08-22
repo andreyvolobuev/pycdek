@@ -26,12 +26,13 @@ class Endpoint(ABC):
     def __call__(self, *args, **kwargs):
         url = self.URL
         if "%s" in self.URL:
-            uuid = getattr(data, "uuid")
+            uuid = kwargs.pop('uuid')
             url = self.URL % uuid
         session = getattr(requests, self._METHOD)
         r = session(url, *args, **kwargs)
         if r.status_code == 401:
             raise PermissionError("Headers are invalid")
+        print(r, r.json())
         return parse_obj_as(self._OBJECT, r.json())
 
 
@@ -57,7 +58,7 @@ class CityList(Endpoint):
     _URL = "location/cities"
     _METHOD = "get"
     _OBJECT = list[entities.City]
-    
+
 
 class CalculateByAvailableTariffs(Endpoint):
     _URL = "calculator/tarifflist"
@@ -68,7 +69,7 @@ class CalculateByAvailableTariffs(Endpoint):
 class OrderInfo(Endpoint):
     _URL = "orders/%s"
     _METHOD = "get"
-
+    _OBJECT = entities.OrderInfoResponse
 
 class EditOrder(Endpoint):
     _URL = "orders/%s"
