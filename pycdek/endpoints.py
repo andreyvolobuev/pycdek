@@ -32,6 +32,7 @@ class Endpoint(ABC):
         r = session(url, *args, **kwargs)
         if r.status_code == 401:
             raise PermissionError("Headers are invalid")
+        print('\n\n', r.json(), '\n\n')
         return parse_obj_as(self._OBJECT, r.json())
 
 
@@ -44,7 +45,7 @@ class Auth(Endpoint):
 class NewOrder(Endpoint):
     _URL = "orders"
     _METHOD = "post"
-    _OBJECT = entities.OrderCreationResponse
+    _OBJECT = entities.OrderInfoResponse
 
 
 class OfficeList(Endpoint):
@@ -70,79 +71,107 @@ class OrderInfo(Endpoint):
     _METHOD = "get"
     _OBJECT = entities.OrderInfoResponse
 
+
 class EditOrder(Endpoint):
     _URL = "orders/%s"
     _METHOD = "patch"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class DeleteOrder(Endpoint):
     _URL = "orders/%s"
     _METHOD = "delete"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class OrderRefusal(Endpoint):
     _URL = "orders/%s/refusal"
     _METHOD = "post"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class IntakeRequest(Endpoint):
     _URL = "intakes"
     _METHOD = "post"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class IntakeInfo(Endpoint):
     _URL = "intakes/%s"
     _METHOD = "get"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class DeleteIntake(Endpoint):
     _URL = "intakes/%s"
     _METHOD = "delete"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class CreateOrderReceipt(Endpoint):
     _URL = "print/orders"
     _METHOD = "post"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class GetOrderReceipt(Endpoint):
     _URL = "print/orders/%s"
     _METHOD = "get"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class CreateOrderBarcode(Endpoint):
     _URL = "print/barcodes"
     _METHOD = "post"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class GetOrderBarcode(Endpoint):
     _URL = "print/barcodes/%s"
     _METHOD = "get"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class CreateDeliveryArrangement(Endpoint):
     _URL = "delivery"
     _METHOD = "post"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class GetDeliveryArrangement(Endpoint):
     _URL = "delivery"
     _METHOD = "get"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class GetPassportData(Endpoint):
     _URL = "passport"
     _METHOD = "get"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class GetOrderCheck(Endpoint):
     _URL = "check"
     _METHOD = "get"
+    _OBJECT = entities.OrderInfoResponse
+
+
+class AddPrealert(Endpoint):
+    _URL = "prealert"
+    _METHOD = "post"
+    _OBJECT = entities.OrderInfoResponse
+
+
+class GetPrealert(Endpoint):
+    _URL = "prealert/%s"
+    _METHOD = "get"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class AddWebhook(Endpoint):
     _URL = "webhooks"
     _METHOD = "post"
+    _OBJECT = entities.OrderInfoResponse
 
 
 class RegionsList(Endpoint):
@@ -158,3 +187,4 @@ class CalculateByTariff(Endpoint):
 class CalculateCustomsTariff(Endpoint):
     _URL = "ddp"
     _METHOD = "post"
+

@@ -1208,13 +1208,13 @@ class Entity(BaseModel):
     """
 
     uuid: UUID
-    is_return: bool
-    is_reverse: bool
+    is_return: Optional[bool]
+    is_reverse: Optional[bool]
     type: Optional[OrderType]
-    cdek_number: str
+    cdek_number: Optional[str]
     number: Optional[constr(max_length=40)]
     delivery_mode: Optional[DeliveryMode]
-    tariff_code: int
+    tariff_code: Optional[int]
     comment: Optional[constr(max_length=255)]
     developer_key: Optional[str]
     shipment_point: Optional[str]
@@ -1224,15 +1224,15 @@ class Entity(BaseModel):
     shipper_address: Optional[constr(max_length=255)]
     delivery_recipient_cost: Optional[Money]
     delivery_recipient_cost_adv: Optional[Threshold]
-    sender: Contact
+    sender: Optional[Contact]
     seller: Optional[Seller]
-    recipient: Contact
-    from_location: Location
-    to_location: Location
+    recipient: Optional[Contact]
+    from_location: Optional[Location]
+    to_location: Optional[Location]
     services: Optional[list[Service]]
-    packages: list[Package]
+    packages: Optional[list[Package]]
     delivery_problem: Optional[list[Problem]]
-    delivery_detail: dict
+    delivery_detail: Optional[dict]
     transacted_payment: Optional[bool]
     statuses: Optional[list[Status]]
     calls: Optional[dict]
@@ -1269,18 +1269,6 @@ class OrderManipulationRequest(BaseModel):
     state: OrderManipulationRequestState
     errors: Optional[list[Error]]
     warnings: Optional[list[Warning]]
-
-
-class OrderCreationResponse(BaseModel):
-    """
-    entity: Информация о заказе
-    requests: Информация о запросе над заказом
-    related_entities: Связанные сущности (если в запросе был передан корректный print)
-    """
-
-    entity: Optional[Entity]
-    requests: list[OrderManipulationRequest]
-    related_entities: Optional[Entity]
 
 
 class OrderInfoResponse(BaseModel):
