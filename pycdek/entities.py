@@ -188,41 +188,41 @@ class MaterialCode(IntEnum):
     RUBBER = 17
 
 
-class ServiceCode(Enum):
-    INSURANCE = auto()
-    TAKE_SENDER = auto()
-    DELIV_RECEIVER = auto()
-    TRYING_ON = auto()
-    PART_DELIV = auto()
-    REVERSE = auto()
-    DANGER_CARGO = auto()
-    SMS = auto()
-    THERMAL_MODE = auto()
-    COURIER_PACKAGE_A2 = auto()
-    SECURE_PACKAGE_A2 = auto()
-    SECURE_PACKAGE_A3 = auto()
-    SECURE_PACKAGE_A4 = auto()
-    SECURE_PACKAGE_A5 = auto()
-    NOTIFY_ORDER_CREATED = auto()
-    NOTIFY_ORDER_DELIVERY = auto()
-    CARTON_BOX_XS = auto()
-    CARTON_BOX_S = auto()
-    CARTON_BOX_M = auto()
-    CARTON_BOX_L = auto()
-    CARTON_BOX_500GR = auto()
-    CARTON_BOX_1KG = auto()
-    CARTON_BOX_2KG = auto()
-    CARTON_BOX_3KG = auto()
-    CARTON_BOX_5KG = auto()
-    CARTON_BOX_10KG = auto()
-    CARTON_BOX_15KG = auto()
-    CARTON_BOX_20KG = auto()
-    CARTON_BOX_30KG = auto()
-    BUBBLE_WRAP = auto()
-    WASTE_PAPER = auto()
-    CARTON_FILLER = auto()
-    BAN_ATTACHMENT_INSPECTION = auto()
-    PHOTO_DOCUMENT = auto()
+class ServiceCode(str, Enum):
+    INSURANCE: str = "INSURANCE"
+    TAKE_SENDER: str = "TAKE_SENDER"
+    DELIV_RECEIVER: str = "DELIV_RECEIVER"
+    TRYING_ON: str = "TRYING_ON"
+    PART_DELIV: str = "PART_DELIV"
+    REVERSE: str = "REVERSE"
+    DANGER_CARGO: str = "DANGER_CARGO"
+    SMS: str = "SMS"
+    THERMAL_MODE: str = "THERMAL_MODE"
+    COURIER_PACKAGE_A2: str = "COURIER_PACKAGE_A2"
+    SECURE_PACKAGE_A2: str = "SECURE_PACKAGE_A2"
+    SECURE_PACKAGE_A3: str = "SECURE_PACKAGE_A3"
+    SECURE_PACKAGE_A4: str = "SECURE_PACKAGE_A4"
+    SECURE_PACKAGE_A5: str = "SECURE_PACKAGE_A5"
+    NOTIFY_ORDER_CREATED: str = "NOTIFY_ORDER_CREATED"
+    NOTIFY_ORDER_DELIVERY: str = "NOTIFY_ORDER_DELIVERY"
+    CARTON_BOX_XS: str = "CARTON_BOX_XS"
+    CARTON_BOX_S: str = "CARTON_BOX_S"
+    CARTON_BOX_M: str = "CARTON_BOX_M"
+    CARTON_BOX_L: str = "CARTON_BOX_L"
+    CARTON_BOX_500GR: str = "CARTON_BOX_500GR"
+    CARTON_BOX_1KG: str = "CARTON_BOX_1KG"
+    CARTON_BOX_2KG: str = "CARTON_BOX_2KG"
+    CARTON_BOX_3KG: str = "CARTON_BOX_3KG"
+    CARTON_BOX_5KG: str = "CARTON_BOX_5KG"
+    CARTON_BOX_10KG: str = "CARTON_BOX_10KG"
+    CARTON_BOX_15KG: str = "CARTON_BOX_15KG"
+    CARTON_BOX_20KG: str = "CARTON_BOX_20KG"
+    CARTON_BOX_30KG: str = "CARTON_BOX_30KG"
+    BUBBLE_WRAP: str = "BUBBLE_WRAP"
+    WASTE_PAPER: str = "WASTE_PAPER"
+    CARTON_FILLER: str = "CARTON_FILLER"
+    BAN_ATTACHMENT_INSPECTION: str = "BAN_ATTACHMENT_INSPECTION"
+    PHOTO_DOCUMENT: str = "PHOTO_DOCUMENT"
 
 
 class OrderManipulationRequestType(str, Enum):

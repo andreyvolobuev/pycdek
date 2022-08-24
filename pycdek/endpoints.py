@@ -32,7 +32,6 @@ class Endpoint(ABC):
         r = session(url, *args, **kwargs)
         if r.status_code == 401:
             raise PermissionError("Headers are invalid")
-        print(r, r.json())
         return parse_obj_as(self._OBJECT, r.json())
 
 
