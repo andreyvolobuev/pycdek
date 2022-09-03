@@ -27,7 +27,7 @@ class Endpoint(ABC):
     def __call__(self, *args, **kwargs) -> Type[BaseModel]:
         url = self.URL
         if "%s" in self.URL:
-            uuid = kwargs.pop('uuid')
+            uuid = kwargs.pop("uuid")
             url = self.URL % uuid
         session = getattr(requests, self._METHOD)
         r = session(url, *args, **kwargs)
@@ -187,4 +187,3 @@ class CalculateByTariff(Endpoint):
 class CalculateCustomsTariff(Endpoint):
     _URL = "ddp"
     _METHOD = "post"
-

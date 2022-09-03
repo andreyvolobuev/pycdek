@@ -376,6 +376,7 @@ class Problem(BaseModel):
     code: Код проблемы
     create_date: Дата создания проблемы
     """
+
     code: Optional[ProblemCode]
     create_date: Optional[datetime]
 
@@ -517,6 +518,7 @@ class City(BaseModel):
     errors: Список ошибок
 
     """
+
     code: str
     city: str
     fias_guid: Optional[UUID]
@@ -864,7 +866,7 @@ class OfficeListRequest(BaseModel):
 
     @validator("city_code", always=True)
     def validate_city_code(cls, v, values):
-        return values['city'].code
+        return values["city"].code
 
 
 class WorkTime(BaseModel):
@@ -1111,7 +1113,7 @@ class OrderCreationRequest(BaseModel):
 
     @validator("tariff_code", always=True)
     def validate_tariff_code(cls, v, values):
-        return values['tariff'].tariff_code
+        return values["tariff"].tariff_code
 
     @validator("shipment_point", always=True)
     def validate_shipment_point(cls, v, values):
@@ -1236,7 +1238,6 @@ class Entity(BaseModel):
     transacted_payment: Optional[bool]
     statuses: Optional[list[Status]]
     calls: Optional[dict]
-
 
 
 class OrderManipulationRequest(BaseModel):

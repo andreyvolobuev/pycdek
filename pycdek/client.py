@@ -33,42 +33,36 @@ class CDEK:
         r = entities.CitySearchRequest(**kwargs)
         return self(endpoints.CityList, r.dict())
 
-    def get_location(
-            self,
-            address: str,
-            city: entities.City
-        ) -> entities.Location:
+    def get_location(self, address: str, city: entities.City) -> entities.Location:
         return entities.Location(
-            code=city.code, 
+            code=city.code,
             longitude=city.longitude,
             latitude=city.latitude,
             country_code=city.country_code,
             region=city.region,
             sub_region=city.sub_region,
             city=city.city,
-            address=address
+            address=address,
         )
 
     def create_package(
-            self, 
-            name: str,
-            weight: int,
-            payment: Optional[int] = None,
-            cost: Optional[int] = None,
-            vat_sum: Optional[int] = None,
-            vat_rate: Optional[int] = None,
-            amount: Optional[int] = 1
-        ) -> entities.Package:
+        self,
+        name: str,
+        weight: int,
+        payment: Optional[int] = None,
+        cost: Optional[int] = None,
+        vat_sum: Optional[int] = None,
+        vat_rate: Optional[int] = None,
+        amount: Optional[int] = 1,
+    ) -> entities.Package:
         item = entities.Item(
             name=name,
             payment=entities.Money(
-                value=payment if payment else 0,
-                vat_sum=vat_sum,
-                vat_rate=vat_rate
+                value=payment if payment else 0, vat_sum=vat_sum, vat_rate=vat_rate
             ),
             cost=cost or 0,
             weight=weight,
-            amount=amount
+            amount=amount,
         )
         return entities.Package(weight=weight, items=[item])
 
@@ -80,7 +74,7 @@ class CDEK:
         r = entities.OrderCreationRequest(**kwargs)
         return self(endpoints.NewOrder, r.json())
 
-    def get_contact(self, name: str, phones: Union[str|list]) -> entities.Contact:
+    def get_contact(self, name: str, phones: Union[str | list]) -> entities.Contact:
         phone_list = []
         if not isinstance(phones, list):
             phones = [phones]
@@ -92,7 +86,7 @@ class CDEK:
         r = entities.OfficeListRequest(**kwargs)
         return self(endpoints.OfficeList, r.dict())
 
-    def get_order_info(self, uuid: Union[str|UUID]) -> entities.OrderInfoResponse:
+    def get_order_info(self, uuid: Union[str | UUID]) -> entities.OrderInfoResponse:
         if isinstance(uuid, UUID):
             uuid = str(uuid)
         return self(endpoints.OrderInfo, uuid=uuid)
