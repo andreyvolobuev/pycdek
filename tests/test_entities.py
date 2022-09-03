@@ -1,19 +1,35 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from pycdek import CDEK
+from pycdek import CDEK, entities
 from tests import data
 from uuid import UUID
 
 
 class TestPycdek(unittest.TestCase):
-    @patch('pycdek.entities.AccessToken.is_valid', return_value=True)
+    @patch(
+        'pycdek.auth.TokenManager._read_token_from_file',
+        return_value=entities.AccessToken(
+            access_token='....',
+            expires_in='6000',
+            scope='...',
+            jti='....'
+        )
+    )
     def setUp(self, token_mock):
         CLIENT_ID = '................................'
         CLIENT_SECRET = '................................'
         self.cdek = CDEK(CLIENT_ID, CLIENT_SECRET)
 
 
-    @patch('pycdek.entities.AccessToken.is_valid', return_value=True)
+    @patch(
+        'pycdek.auth.TokenManager._read_token_from_file',
+        return_value=entities.AccessToken(
+            access_token='....',
+            expires_in='6000',
+            scope='...',
+            jti='....'
+        )
+    )
     def test_create_order(self, token_mock):
         with patch('requests.get') as session:
             session.return_value = MagicMock(
