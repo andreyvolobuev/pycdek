@@ -1,6 +1,7 @@
 from pycdek import entities
 from pycdek import endpoints
 from pathlib import Path
+from typing import Optional
 
 
 class TokenManager:
@@ -12,7 +13,7 @@ class TokenManager:
         return Path(dir_name, file_name)
 
     @staticmethod
-    def _read_token_from_file() -> None:
+    def _read_token_from_file() -> Optional[entities.AccessToken]:
         tmp_file = TokenManager._get_tmp_token_path()
         if tmp_file.exists():
             with open(tmp_file) as file:

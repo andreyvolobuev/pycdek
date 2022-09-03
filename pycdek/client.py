@@ -1,6 +1,8 @@
 from pycdek import entities
 from pycdek import endpoints
 from pycdek.auth import TokenManager
+from typing import Optional, Union
+from uuid import UUID
 
 
 class CDEK:
@@ -10,7 +12,7 @@ class CDEK:
         )
         self.token = TokenManager.get_token(self.credentials)
 
-    def __call__(self, Endpoint, *args, **kwargs):
+    def __call__(self, Endpoint: endpoints.Endpoint, *args, **kwargs):
         endpoint = Endpoint()
         try:
             return endpoint(*args, headers=self.headers, **kwargs)
@@ -31,7 +33,11 @@ class CDEK:
         r = entities.CitySearchRequest(**kwargs)
         return self(endpoints.CityList, r.dict())
 
-    def get_location(self, address, city):
+    def get_location(
+            self,
+            address: str,
+            city: entities.City
+        ) -> entities.Location:
         return entities.Location(
             code=city.code, 
             longitude=city.longitude,
@@ -45,14 +51,14 @@ class CDEK:
 
     def create_package(
             self, 
-            name, 
-            weight,
-            payment=None,
-            cost=None,
-            vat_sum=None,
-            vat_rate=None,
-            amount=1
-        ):
+            name: str,
+            weight: int,
+            payment: Optional[int] = None,
+            cost: Optional[int] = None,
+            vat_sum: Optional[int] = None,
+            vat_rate: Optional[int] = None,
+            amount: Optional[int] = 1
+        ) -> entities.Package:
         item = entities.Item(
             name=name,
             payment=entities.Money(
@@ -66,15 +72,15 @@ class CDEK:
         )
         return entities.Package(weight=weight, items=[item])
 
-    def get_available_tariffs(self, **kwargs):
+    def get_available_tariffs(self, **kwargs) -> entities.TariffListResponse:
         r = entities.TariffListRequest(**kwargs)
         return self(endpoints.CalculateByAvailableTariffs, r.json())
 
-    def register_order(self, **kwargs):
+    def register_order(self, **kwargs) -> entities.OrderInfoResponse:
         r = entities.OrderCreationRequest(**kwargs)
         return self(endpoints.NewOrder, r.json())
 
-    def get_contact(self, name, phones):
+    def get_contact(self, name: str, phones: Union[str|list]) -> entities.Contact:
         phone_list = []
         if not isinstance(phones, list):
             phones = [phones]
@@ -82,9 +88,11 @@ class CDEK:
             phone_list.append(entities.Phone(number=phone))
         return entities.Contact(name=name, phones=phone_list)
 
-    def get_office(self, **kwargs):
+    def get_office(self, **kwargs) -> list[entities.Office]:
         r = entities.OfficeListRequest(**kwargs)
         return self(endpoints.OfficeList, r.dict())
 
-    def get_order_info(self, uuid):
+    def get_order_info(self, uuid: Union[str|UUID]) -> entities.OrderInfoResponse:
+        if isinstance(uuid, UUID):
+            uuid = str(uuid)
         return self(endpoints.OrderInfo, uuid=uuid)

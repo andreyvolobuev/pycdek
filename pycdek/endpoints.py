@@ -1,7 +1,8 @@
 import requests
 from pycdek import entities
-from pydantic import parse_obj_as
+from pydantic import parse_obj_as, BaseModel
 from abc import ABC, abstractmethod, abstractproperty
+from typing import Type
 
 
 class Endpoint(ABC):
@@ -16,14 +17,14 @@ class Endpoint(ABC):
         """returns endpoint method"""
 
     @abstractproperty
-    def _OBJECT(self):
+    def _OBJECT(self) -> Type[BaseModel]:
         """returns target object"""
 
     @property
     def URL(self) -> str:
         return self._BASE + self._URL
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> Type[BaseModel]:
         url = self.URL
         if "%s" in self.URL:
             uuid = kwargs.pop('uuid')
