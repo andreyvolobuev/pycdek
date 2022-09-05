@@ -1,4 +1,4 @@
-import requests
+import aiohttp
 from pycdek import entities
 from pydantic import parse_obj_as, BaseModel
 from abc import ABC, abstractmethod, abstractproperty
@@ -24,16 +24,13 @@ class Endpoint(ABC):
     def URL(self) -> str:
         return self._BASE + self._URL
 
-    def __call__(self, *args, **kwargs) -> Type[BaseModel]:
-        url = self.URL
-        if "%s" in self.URL:
-            uuid = kwargs.pop("uuid")
-            url = self.URL % uuid
-        session = getattr(requests, self._METHOD)
-        r = session(url, *args, **kwargs)
-        if r.status_code == 401:
-            raise PermissionError("Headers are invalid")
-        return parse_obj_as(self._OBJECT, r.json())
+    async def __call__(self, params, **kwargs) -> Type[BaseModel]:
+        url = self.URL.format(kwargs.get("uuid"))
+        session = getattr(kwargs.get("session"), self._METHOD)
+        async with session(url, params=params, headers=kwargs.get("headers")) as r:
+            if r.status == 401:
+                raise PermissionError("Headers are invalid")
+            return parse_obj_as(self._OBJECT, await r.json())
 
 
 class Auth(Endpoint):
@@ -67,25 +64,25 @@ class CalculateByAvailableTariffs(Endpoint):
 
 
 class OrderInfo(Endpoint):
-    _URL = "orders/%s"
+    _URL = "orders/{}"
     _METHOD = "get"
     _OBJECT = entities.OrderInfoResponse
 
 
 class EditOrder(Endpoint):
-    _URL = "orders/%s"
+    _URL = "orders/{}"
     _METHOD = "patch"
     _OBJECT = entities.OrderInfoResponse
 
 
 class DeleteOrder(Endpoint):
-    _URL = "orders/%s"
+    _URL = "orders/{}"
     _METHOD = "delete"
     _OBJECT = entities.OrderInfoResponse
 
 
 class OrderRefusal(Endpoint):
-    _URL = "orders/%s/refusal"
+    _URL = "orders/{}/refusal"
     _METHOD = "post"
     _OBJECT = entities.OrderInfoResponse
 
@@ -97,13 +94,13 @@ class IntakeRequest(Endpoint):
 
 
 class IntakeInfo(Endpoint):
-    _URL = "intakes/%s"
+    _URL = "intakes/{}"
     _METHOD = "get"
     _OBJECT = entities.OrderInfoResponse
 
 
 class DeleteIntake(Endpoint):
-    _URL = "intakes/%s"
+    _URL = "intakes/{}"
     _METHOD = "delete"
     _OBJECT = entities.OrderInfoResponse
 
@@ -115,7 +112,7 @@ class CreateOrderReceipt(Endpoint):
 
 
 class GetOrderReceipt(Endpoint):
-    _URL = "print/orders/%s"
+    _URL = "print/orders/{}"
     _METHOD = "get"
     _OBJECT = entities.OrderInfoResponse
 
@@ -127,7 +124,7 @@ class CreateOrderBarcode(Endpoint):
 
 
 class GetOrderBarcode(Endpoint):
-    _URL = "print/barcodes/%s"
+    _URL = "print/barcodes/{}"
     _METHOD = "get"
     _OBJECT = entities.OrderInfoResponse
 
@@ -163,7 +160,7 @@ class AddPrealert(Endpoint):
 
 
 class GetPrealert(Endpoint):
-    _URL = "prealert/%s"
+    _URL = "prealert/{}"
     _METHOD = "get"
     _OBJECT = entities.OrderInfoResponse
 

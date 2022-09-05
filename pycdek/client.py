@@ -1,3 +1,4 @@
+import aiohttp
 from pycdek import entities
 from pycdek import endpoints
 from typing import Optional, Union
@@ -10,28 +11,31 @@ class CDEK:
         self.credentials = entities.ClientCredentials(
             client_id=client_id, client_secret=client_secret
         )
-        self.token = TokenManager.get_token(self.credentials)
+        self.token = None
 
-    def __call__(self, Endpoint: endpoints.Endpoint, *args, **kwargs):
+    async def __call__(
+        self, Endpoint: endpoints.Endpoint, payload: dict, auth: bool = False
+    ):
         endpoint = Endpoint()
         try:
-            return endpoint(*args, headers=self.headers, **kwargs)
-        except PermissionError as e:
-            self.token = TokenManager.gen_new_token(self.credentials)
-            TokenManager.write_token_to_file(self.token)
-            return self(Endpoint, *args, **kwargs)
+            async with aiohttp.ClientSession() as session:
+                return await endpoint(
+                    payload, session=session, headers={} if auth else await self.headers
+                )
+        except PermissionError:
+            self.token = await TokenManager.get_token(self)
+            return await self(Endpoint, payload)
 
     @property
-    def headers(self):
-        if not self.token.is_valid():
-            self.token = TokenManager.gen_new_token(self.credentials)
-            TokenManager.write_token_to_file(self.token)
+    async def headers(self):
+        if not self.token or not self.token.is_valid():
+            self.token = await TokenManager.get_token(self)
         headers = entities.Headers(Authorization=self.token.access_token)
         return headers.dict(by_alias=True)
 
-    def get_cities(self, **kwargs):
+    async def get_cities(self, **kwargs):
         r = entities.CitySearchRequest(**kwargs)
-        return self(endpoints.CityList, r.dict())
+        return await self(endpoints.CityList, r.dict(exclude_none=True))
 
     def get_location(self, address: str, city: entities.City) -> entities.Location:
         return entities.Location(
@@ -66,13 +70,13 @@ class CDEK:
         )
         return entities.Package(weight=weight, items=[item])
 
-    def get_available_tariffs(self, **kwargs) -> entities.TariffListResponse:
+    async def get_available_tariffs(self, **kwargs) -> entities.TariffListResponse:
         r = entities.TariffListRequest(**kwargs)
-        return self(endpoints.CalculateByAvailableTariffs, r.json())
+        return await self(endpoints.CalculateByAvailableTariffs, r.json())
 
-    def register_order(self, **kwargs) -> entities.OrderInfoResponse:
+    async def register_order(self, **kwargs) -> entities.OrderInfoResponse:
         r = entities.OrderCreationRequest(**kwargs)
-        return self(endpoints.NewOrder, r.json())
+        return await self(endpoints.NewOrder, r.json())
 
     def get_contact(self, name: str, phones: Union[str | list]) -> entities.Contact:
         phone_list = []
@@ -82,18 +86,19 @@ class CDEK:
             phone_list.append(entities.Phone(number=phone))
         return entities.Contact(name=name, phones=phone_list)
 
-    def get_office(self, **kwargs) -> list[entities.Office]:
+    async def get_office(self, **kwargs) -> list[entities.Office]:
         r = entities.OfficeListRequest(**kwargs)
-        return self(endpoints.OfficeList, r.dict())
+        return await self(endpoints.OfficeList, r.dict())
 
-    def get_order_info(self, uuid: Union[str | UUID]) -> entities.OrderInfoResponse:
+    async def get_order_info(
+        self, uuid: Union[str | UUID]
+    ) -> entities.OrderInfoResponse:
         if isinstance(uuid, UUID):
             uuid = str(uuid)
-        return self(endpoints.OrderInfo, uuid=uuid)
+        return await self(endpoints.OrderInfo, uuid=uuid)
 
-    def auth(self):
-        return self(endpoints.Auth, self.credentials)
-
+    async def auth(self):
+        return await self(endpoints.Auth, self.credentials.dict(), auth=True)
 
 
 class TokenManager:
@@ -121,7 +126,7 @@ class TokenManager:
             file.write(token.json())
 
     @staticmethod
-    def get_token(client: CDEK) -> entities.AccessToken:
+    async def get_token(client: CDEK) -> entities.AccessToken:
         """
         Чтобы не делать запрос к СДЭКу каждый раз, когда нам нужен токен,
         мы будем сохранять его во временный файл и брать от туда до тех пор,
@@ -131,6 +136,6 @@ class TokenManager:
         """
         token = TokenManager._read_token_from_file()
         if not token:
-            token = client.auth()
+            token = await client.auth()
             TokenManager.write_token_to_file(token)
         return token
