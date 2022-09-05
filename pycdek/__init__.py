@@ -1,4 +1,3 @@
-from pycdek import auth
 from pycdek import entities
 from pycdek import endpoints
 from pycdek import client
