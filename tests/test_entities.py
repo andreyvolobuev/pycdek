@@ -43,7 +43,7 @@ class TestPycdek(IsolatedAsyncioTestCase):
         r.json = AsyncMock(return_value=data.cities_vladivostok)
         cities = await self.cdek.get_cities(city="Владивосток")
         self.assertIn("288", [city.code for city in cities])
-        
+
         vladivostok = cities[1]
         to_location = self.cdek.get_location("Светланская 1", vladivostok)
         self.assertEqual(to_location.address, "Светланская 1")
@@ -72,7 +72,7 @@ class TestPycdek(IsolatedAsyncioTestCase):
         )
         self.assertEqual("Петров Петр Петрович", recipient.name)
         self.assertIn("+79222222222", [phone.number for phone in recipient.phones])
-        
+
         r.json = AsyncMock(return_value=data.created_order2)
         order = await self.cdek.register_order(
             tariff=tariff,

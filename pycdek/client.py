@@ -14,13 +14,20 @@ class CDEK:
         self.token = None
 
     async def __call__(
-        self, Endpoint: endpoints.Endpoint, payload: dict = None, auth: bool = False, **kwargs
+        self,
+        Endpoint: endpoints.Endpoint,
+        payload: dict = None,
+        auth: bool = False,
+        **kwargs
     ):
         endpoint = Endpoint()
         try:
             async with aiohttp.ClientSession() as session:
                 return await endpoint(
-                    payload, session=session, headers={} if auth else await self.headers, **kwargs
+                    payload,
+                    session=session,
+                    headers={} if auth else await self.headers,
+                    **kwargs
                 )
         except PermissionError:
             self.token = await TokenManager.get_token(self)
