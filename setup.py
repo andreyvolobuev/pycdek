@@ -10,7 +10,7 @@ with open(os.path.join(directory, "README.md"), encoding="utf-8") as f:
 setup(
     name="Pycdek",
     version="0.1.0",
-    description="Python implementation of CDEK API v2.0",
+    description="Asynchronous python implementation of CDEK API v2.0",
     author="Andrey Volobuev",
     license="MIT",
     long_description=long_description,
@@ -20,7 +20,7 @@ setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
     ],
-    install_requires=["pydantic", "requests"],
+    install_requires=["pydantic", "aiohttp"],
     python_requires=">=3.10",
     extras_require={
         "testing": ["unittest"],
