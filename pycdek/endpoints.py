@@ -27,7 +27,7 @@ class Endpoint(ABC):
     async def __call__(self, params, **kwargs) -> Type[BaseModel]:
         url = self.URL.format(kwargs.get("uuid"))
         session = getattr(kwargs.get("session"), self._METHOD)
-        p = 'data' if self._METHOD == 'post' else 'params'
+        p = "data" if self._METHOD == "post" else "params"
         async with session(url, headers=kwargs.get("headers"), **{p: params}) as r:
             if r.status == 401:
                 raise PermissionError("Headers are invalid")
