@@ -79,11 +79,11 @@ class CDEK:
 
     async def get_available_tariffs(self, **kwargs) -> entities.TariffListResponse:
         r = entities.TariffListRequest(**kwargs)
-        return await self(endpoints.CalculateByAvailableTariffs, r.json(exclude_none=True))
+        return await self(endpoints.CalculateByAvailableTariffs, r.json())
 
     async def register_order(self, **kwargs) -> entities.OrderInfoResponse:
         r = entities.OrderCreationRequest(**kwargs)
-        return await self(endpoints.NewOrder, r.dict(exclude_none=True))
+        return await self(endpoints.NewOrder, r.json(exclude_none=True))
 
     def get_contact(self, name: str, phones: Union[str | list]) -> entities.Contact:
         phone_list = []

@@ -455,7 +455,7 @@ class Location(BaseModel):
     address: Строка адреса
     """
 
-    city_code: Optional[int]
+    code: Optional[int]
     fias_guid: Optional[UUID]
     postal_code: Optional[constr(max_length=255)]
     longitude: Optional[float]
